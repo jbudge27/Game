@@ -95,6 +95,7 @@ Rings
 For more interesting effects
 Boost crit chance?
 May help with off-element skills, grant special skills, etc.
+
 SKILLS
 These can be selected and added to the arena menu out of battle.
 ?Five? Skills per element unlocked.
