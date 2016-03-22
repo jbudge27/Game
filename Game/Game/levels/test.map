@@ -1,0 +1,18 @@
+[level]
+map = ##########
+	#.........#
+	#.........#
+	#....##...#
+	#.........#
+	#.........#
+	###########
+
+[.]
+name = "gnd"
+tile = "tiles/gnd.jpg"
+walkable = TRUE
+
+[#]
+name = "wall"
+tile = "tiles/wall.jpg"
+walkable = FALSE
