@@ -1,7 +1,8 @@
-import pygame, os
+import pygame, os, math
 from Level import Level
 from Player import Player
 from Sprite import Sprite
+from Monster import Monster
 from pygame.locals import *
 
 def key_event_handler(pressed_key):
@@ -35,6 +36,20 @@ def key_event_handler(pressed_key):
 			print "OUCH!"
 	return False
 
+def end_step():
+	#moves all the monsters
+	for monster in mon.monster_instance:
+		info = {"level":monster["level"], "x":monster["x"], "y":monster["y"], "p_level":player.level, "map":level}
+		monster["x"], monster["y"] = mon.move(info)
+		monster["sprite"].move(math.copysign(1, (monster["x"] - info["x"])) * MAP_TILE_WIDTH, math.copysign(1, (monster["y"] - info["y"])) * MAP_TILE_HEIGHT)
+	#handle the triggered events from the main game loop
+	if ("new_monster" in triggered_events):
+		n = triggered_events.pop("new_monster", None)
+		x = triggered_events.pop("x", None)
+		y = triggered_events.pop("y", None)
+		new_mon = mon.load_monster(n, x, y)
+		sprites.add(new_mon["sprite"])
+
 
 #------------------------------------------------------------------
 #----------------MAIN GAME CODE------------------------------------
@@ -49,8 +64,10 @@ if __name__ == "__main__":
 	MAP_TILE_WIDTH = 32
 	MAP_TILE_HEIGHT = 32
 	game_over = False
+	triggered_events = {"new_monster":"troglodyte", "x":3, "y":3}
 	level = Level()
 	player = Player()
+	mon = Monster()
 	level.load_map('levels/test.map')
 	clock = pygame.time.Clock()
 	background = level.render()
@@ -74,4 +91,4 @@ if __name__ == "__main__":
 			elif event.type == pygame.locals.KEYDOWN:
 				game_over = key_event_handler(event.key)
 				#run_AI()
-
+			end_step()
