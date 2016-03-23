@@ -1,18 +1,18 @@
 [level]
-map = ##########
+map = ###########
 	#.........#
 	#.........#
-	#....##...#
+	#....##.###
 	#.........#
 	#.........#
 	###########
 
 [.]
-name = "gnd"
-tile = "tiles/gnd.jpg"
-walkable = TRUE
+name = gnd
+tile = tiles/gnd.bmp
+walkable = True
 
 [#]
-name = "wall"
-tile = "tiles/wall.jpg"
-walkable = FALSE
+name = wall
+tile = tiles/wall.bmp
+walkable = False

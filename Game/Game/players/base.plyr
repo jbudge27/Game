@@ -1,0 +1,44 @@
+[misc]
+name = Jeff
+icon = tiles/player.bmp
+x = 2
+y = 2
+
+[stats]
+level = 1
+exp = 0
+strength = 1
+constitution = 1
+wisdom = 1
+will = 1
+quickness = 1
+water = 0
+earth = 0
+air = 0
+fire = 0
+lightning = 0
+dark = 0
+light = 0
+sound = 0
+chaos = 0
+
+[equipment]
+weapon = none
+armor = none
+orb = none
+ring = none
+
+[items]
+inventory = potion
+	nothing
+
+[skills]
+water = 0
+earth = 0
+air = 0
+fire = 0
+lightning = 0
+light = 0
+dark = 0
+sound = 0
+chaos = 0

@@ -1,4 +1,6 @@
 import ConfigParser
+import pygame
+from pygame.locals import *
 
 class Level(object):
 	def load_map(self, filename="levels/test.map"):
@@ -15,7 +17,10 @@ class Level(object):
 		self.height = len(self.map)
 
 	def load_tile(self, x, y):
-		return pygame.image.load(self.get_tile(x, y).get("tile"))
+		#print self.get_tile(x, y).get("tile")
+		image = pygame.image.load(self.get_tile(x, y).get("tile"))
+		#width, height = image.get_size()
+		return image
 
 	def get_tile(self, x, y):
 		try:
@@ -28,14 +33,19 @@ class Level(object):
 			return {}
 
 	def is_walkable(self, x, y):
-		return self.get_tile(x, y).get("walkable")
+		val = self.get_tile(x, y).get("walkable")
+		return val in (True, 1, 'true', 'yes', "True", 'Yes', '1', 'on', 'On')
 
 	def render(self):
+		MAP_TILE_WIDTH = 32
+		MAP_TILE_HEIGHT = 32
+		#print self.width
+		#print self.height
 		image = pygame.Surface((self.width*MAP_TILE_WIDTH, self.height*MAP_TILE_HEIGHT))
 		overlays = {}
 		for map_y, line in enumerate(self.map):
 			for map_x, c in enumerate(line):
-				tile_image = load_tile(c, line)
-				image.blit(tile_image, map_x*MAP_TILE_WIDTH, map_y*MAP_TILE_HEIGHT)
+				tile_image = self.load_tile(map_x, map_y)
+				image.blit(tile_image, (map_x*MAP_TILE_WIDTH, map_y*MAP_TILE_HEIGHT))
 		return image
 
