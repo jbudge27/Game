@@ -143,10 +143,11 @@ if __name__ == "__main__":
 	while not game_over:
 		#update the screen to include any changes we made by moving, etc.
 		sprites.clear(screen, background)
+		sprites.update()
 		dirty = sprites.draw(screen)
 		pygame.display.update(dirty)
-		#15 frames per second.
-		clock.tick(15)
+		#However many frames per second.
+		clock.tick(16)
 		#handle any events that may occur.
 		for event in pygame.event.get():
 			if event.type == pygame.locals.QUIT:
