@@ -1,0 +1,20 @@
+[misc]
+sprite = 8, 5
+name = Blue Totem
+
+[stats]
+level = 2
+strength = 1
+will = 4
+constitution = 1
+wisdom = 4
+quickness = 0
+water = 2
+earth = 0
+air = 2
+fire = 1
+lightning = 0
+light = 0
+dark = 0
+sound = 0
+chaos = 0

@@ -1,12 +1,12 @@
 [0]
-name = troglodyte
+names = troglodyte
 	spider-man
 	skeleton
 
 [1]
-name = knight
+names = knight
 	totem
 
 [2]
-name = blue totem
+names = blue_totem
 	shemon

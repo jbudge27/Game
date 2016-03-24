@@ -1,4 +1,5 @@
 import ConfigParser
+import random
 import math
 from Sprite import Sprite
 import pygame
@@ -51,7 +52,7 @@ class Monster(object):
 		parser.read("monsters/master.mon")
 		for section in parser.sections():
 			desc = dict(parser.items(section))
-			line[section] = desc
+			line[section] = desc['names'].split('\n')
 		print line
 		return line
 
@@ -68,7 +69,39 @@ class Monster(object):
 		return tile_table
 
 	def move(self, info):
-		while ~info["map"].is_walkable(new_x, new_y):
-			new_x = math.copysign(1, (info["level"] - info['p_level'])) + info["x"] 
-			new_y = math.copysign(1, (info["level"] - info['p_level'])) + info["y"]
-		return (new_x, new_y) 
+		move_x = 0
+		move_y = 0
+		if (info["level"] >= info["p_level"]):
+			move_x = math.copysign(1, (info["p_x"] - info["x"]))
+			move_y = math.copysign(1, (info["y"] - info["p_y"]))
+		else:
+			move_x = math.copysign(1, (info["x"] - info["p_x"]))
+			move_y = math.copysign(1, (info["p_y"] - info["y"]))
+		if (info['p_x'] == info['x']):
+			move_x = 0
+		if (info['p_y'] == info['y']):
+			move_y = 0
+		if (info['redo'] > 0):
+			move_x = random.randint(-1, 2)
+			move_y = random.randint(-1, 2)
+		new_x = move_x + info["x"] 
+		new_y = move_y + info["y"]
+		#print str(new_x) + " from " + str(info['x'])
+		#print str(new_y) + " from " + str(info['y'])
+		return (int(new_x), int(new_y)) 
+
+	def remove_all_monsters(self):
+		self.monster_instance = []
+
+	def generate_monster(self, p_level):
+		available_monsters = {}
+		for key in self.master_list:
+			if int(key) > p_level:
+				continue
+			else:
+				available_monsters[key] = self.master_list[key]
+		print available_monsters
+		sel = random.randint(0, (len(available_monsters) - 1))
+		mon_sel = random.choice(available_monsters[str(sel)])
+		#returns name of monster
+		return mon_sel

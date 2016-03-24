@@ -34,6 +34,7 @@ class Level(object):
 
 	def is_walkable(self, x, y):
 		val = self.get_tile(x, y).get("walkable")
+		#print "walkable is " + str(val)
 		return val in (True, 1, 'true', 'yes', "True", 'Yes', '1', 'on', 'On')
 
 	def render(self):
@@ -49,3 +50,13 @@ class Level(object):
 				image.blit(tile_image, (map_x*MAP_TILE_WIDTH, map_y*MAP_TILE_HEIGHT))
 		return image
 
+	def get_map_and_coords(self, x, y):
+		coords = self.get_tile(x, y).get("link_coordinates").split(",")
+		map_name = self.get_tile(x,y).get("link")
+		return {"map_name":map_name, "x":int(coords[0]), "y":int(coords[1])}
+
+	def check_door(self, x, y):
+		if self.get_tile(x, y).get("name") == "door":
+			return True
+		else:
+			return False

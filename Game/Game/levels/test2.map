@@ -1,9 +1,9 @@
 [level]
 map = ###########
+	<.........#
 	#.........#
-	#.........#
-	#....##.###
-	#.........>
+	#..##.....#
+	#..##.....#
 	#.........#
 	###########
 
@@ -17,9 +17,9 @@ name = wall
 tile = tiles/wall.bmp
 walkable = False
 
-[>]
+[<]
 name = door
 tile = tiles/gnd.bmp
 walkable = True
-link = levels/test2.map
-link_coordinates = 1, 1
+link = levels/test.map
+link_coordinates = 4, 8

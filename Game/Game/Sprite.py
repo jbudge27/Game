@@ -20,3 +20,4 @@ class Sprite(pygame.sprite.Sprite):
 	def move(self, dx, dy):
 		self.rect.move_ip(dx, dy)
 		self.depth = self.rect.midbottom[1]
+		#print "called sprite move function"
