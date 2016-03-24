@@ -2,11 +2,23 @@ import pygame
 from pygame import *
 
 class Sprite(pygame.sprite.Sprite):
-	def __init__(self, pos, frames):
+	def __init__(self, pos, frames=None):
 		super(Sprite, self).__init__()
-		self.image = frames
+		self.frames = frames
+		self.animation = self.stand_animation()
+		self.image = frames[0][0]
 		self.rect = self.image.get_rect()
 		self.pos = pos
+	
+	def stand_animation(self):
+		while True:
+			for frame in self.frames[0]:
+			self.image = frame
+			yield None
+			yield None
+
+	def update(self, *args):
+		self.animation.next()
 
 	def _get_pos(self):
 		return (self.rect.midbottom[0]), (self.rect.midbottom[1])
