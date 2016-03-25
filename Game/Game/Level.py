@@ -1,11 +1,14 @@
 import ConfigParser
 import pygame
+from TileManager import TileManager
 from pygame.locals import *
 
 class Level(object):
 	def load_map(self, filename="levels/test.map"):
 		self.map = []
 		self.key = {}
+		t = TileManager(32, 32)
+		self.tiles = t["tiles/general.bmp"]
 		parser = ConfigParser.ConfigParser()
 		parser.read(filename)
 		self.map = parser.get("level", "map").split("\n")
@@ -17,8 +20,9 @@ class Level(object):
 		self.height = len(self.map)
 
 	def load_tile(self, x, y):
-		#print self.get_tile(x, y).get("tile")
-		image = pygame.image.load(self.get_tile(x, y).get("tile"))
+		pos = self.get_tile(x, y).get("tile").split(',')
+		image = self.tiles[int(pos[0])][int(pos[1])]
+		#image = pygame.image.load(self.tiles[int(pos[0])][int(pos[1])])
 		#width, height = image.get_size()
 		return image
 

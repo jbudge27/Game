@@ -2,24 +2,27 @@ import ConfigParser
 import random
 import math
 from Sprite import Sprite
+from TileManager import TileManager
 import pygame
 from pygame.locals import *
 
 class Monster(object):
 	def __init__(self):
 		#load sprites from sheet
-		width = 32
-		height = 32
-		image = pygame.image.load("tiles/monsters.bmp").convert()
-		image_width, image_height = image.get_size()
-		tile_table = []
-		for tile_x in range(0, image_width/width):
-			line = []
-			tile_table.append(line)
-			for tile_y in range(0, image_height/height):
-				rect = (tile_x*width, tile_y*height, width, height)
-				line.append(image.subsurface(rect))
-		self.sprites = tile_table
+		table = TileManager(32, 32)
+		#width = 32
+		#height = 32
+		#image = pygame.image.load("tiles/monsters.bmp").convert()
+		#image_width, image_height = image.get_size()
+		#tile_table = []
+		#for tile_x in range(0, image_width/width):
+		#	line = []
+		#	tile_table.append(line)
+		#	for tile_y in range(0, image_height/height):
+		#		rect = (tile_x*width, tile_y*height, width, height)
+		#		line.append(image.subsurface(rect))
+		#self.sprites = tile_table
+		self.sprites = table["tiles/monsters.bmp"]
 		#this is the instances of monsters in the level
 		self.monster_instance = []
 		#master list of possible monsters

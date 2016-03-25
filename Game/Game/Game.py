@@ -52,25 +52,24 @@ def end_step():
 		x = triggered_events.pop("x", None)
 		y = triggered_events.pop("y", None)
 		new_mon = mon.load_monster(n, x, y)
-		sprites.add(new_mon["sprite"])
-	#print mon.monster_instance
+		moving_sprites.add(new_mon["sprite"])
+		moving_sprites.switch_layer(0,1)
+	collision_check(player.x, player.y)
 
 def move_monster(mons):
-		info = {"level":mons["stats"]["level"], "x":mons["x"], "y":mons["y"], "p_level":player.player["stats"]["level"], "p_x":player.x, "p_y":player.y, "redo":0}
+	info = {"level":mons["stats"]["level"], "x":mons["x"], "y":mons["y"], "p_level":player.player["stats"]["level"], "p_x":player.x, "p_y":player.y, "redo":0}
+	temp_x, temp_y = mon.move(info)
+	while not level.is_walkable(temp_x, temp_y):
+		info["redo"] += 1
 		temp_x, temp_y = mon.move(info)
-		while not level.is_walkable(temp_x, temp_y):
-			info["redo"] += 1
-			temp_x, temp_y = mon.move(info)
-			for other_mons in mon.monster_instance:
-				if (other_mons == mons):
-					continue
-				elif (other_mons['x'], other_mons['y'] == temp_x, temp_y):
-					temp_x, temp_y = mon.move(info)
-			#print temp_x, temp_y
-		mons["sprite"].move((temp_x - mons["x"]) * MAP_TILE_WIDTH, (temp_y - mons["y"]) * MAP_TILE_HEIGHT)
-		mons["x"], mons["y"] = (temp_x, temp_y)
-		#print mons
-
+		for other_mons in mon.monster_instance:
+			if (other_mons == mons):
+				continue
+			elif (other_mons['x'], other_mons['y'] == temp_x, temp_y):
+				temp_x, temp_y = mon.move(info)
+		#print temp_x, temp_y
+	mons["sprite"].move((temp_x - mons["x"]) * MAP_TILE_WIDTH, (temp_y - mons["y"]) * MAP_TILE_HEIGHT)
+	mons["x"], mons["y"] = (temp_x, temp_y)
 
 def add_events():
 	#probabilistically does stuff. Fun.
@@ -90,21 +89,17 @@ def add_events():
 def is_occupied(x, y):
 	if (not level.is_walkable(x, y)):
 		return True
-	#print "past walkable"
-	#if (x == player.x and y == player.y):
-	#	return True
-	#print "past player"
 	for mons in mon.monster_instance:
 		if (mons['x'] == x and mons['y'] == y):
 			return True
-		#print "past one..."
-	#print "past monsters"
 	return False
 
 def change_level():
 	global background
 	global screen
 	mon.remove_all_monsters()
+	temp_sprite = player_sprite
+	#sprites.
 	new_dict = level.get_map_and_coords(player.x, player.y)
 	level.load_map(new_dict["map_name"])
 	x_sprite = new_dict['x'] - player.x
@@ -113,6 +108,11 @@ def change_level():
 	background = level.render()
 	screen.blit(background, (0, 0))
 	pygame.display.flip()
+
+def collision_check(x, y):
+	for monster in mon.monster_instance:
+		if monster['x'] == x and monster['y'] == y:
+			print "You collided with " + monster['name']
 #------------------------------------------------------------------
 #----------------MAIN GAME CODE------------------------------------
 #------------------------------------------------------------------
@@ -135,17 +135,23 @@ if __name__ == "__main__":
 	clock = pygame.time.Clock()
 	background = level.render()
 	screen.blit(background, (0, 0))
+	screen.blit(pygame.image.load("tiles/menu.jpg").convert(), (0, background.get_height()))
 	sprites = pygame.sprite.RenderUpdates()
+	moving_sprites = pygame.sprite.LayeredUpdates()
 	player_sprite = Sprite((player.x*MAP_TILE_WIDTH, player.y*MAP_TILE_HEIGHT), player.icon)
-	sprites.add(player_sprite)
+	moving_sprites.add(player_sprite)
+	moving_sprites.switch_layer(0, 1)
 	pygame.display.flip()
 
 	while not game_over:
 		#update the screen to include any changes we made by moving, etc.
 		sprites.clear(screen, background)
-		sprites.update()
+		moving_sprites.clear(screen, background)
+		#sprites.update()
 		dirty = sprites.draw(screen)
+		moving_dirty = moving_sprites.draw(screen)
 		pygame.display.update(dirty)
+		pygame.display.update(moving_dirty)
 		#However many frames per second.
 		clock.tick(16)
 		#handle any events that may occur.

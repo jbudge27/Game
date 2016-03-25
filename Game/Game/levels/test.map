@@ -9,17 +9,17 @@ map = ###########
 
 [.]
 name = gnd
-tile = tiles/gnd.bmp
+tile = 9,0
 walkable = True
 
 [#]
 name = wall
-tile = tiles/wall.bmp
+tile = 12,0
 walkable = False
 
 [>]
 name = door
-tile = tiles/gnd.bmp
+tile = 2,0
 walkable = True
 link = levels/test2.map
 link_coordinates = 1, 1
