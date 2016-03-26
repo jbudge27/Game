@@ -3,6 +3,7 @@ from Level import Level
 from Player import Player
 from Sprite import Sprite
 from Monster import Monster
+from Menu import Menu
 from pygame.locals import *
 
 def key_event_handler(pressed_key):
@@ -30,7 +31,20 @@ def key_event_handler(pressed_key):
 			player_move(-1, 0)
 		else:
 			print "OUCH!"
+	elif (pressed_key == K_SPACE):
+		menu.run_menu()
+		background = level.render()
+		restore_back()
+	
 	return False
+
+def restore_back():
+	screen = pygame.display.set_mode(background.get_size())
+	print "screen"
+	screen.blit(background,(0, 0))
+	print "blit"
+	pygame.display.flip()
+	print "flip"
 
 def player_move(dx, dy):
 	player.x += dx
@@ -106,8 +120,7 @@ def change_level():
 	y_sprite = new_dict['y'] - player.y
 	player_move(x_sprite, y_sprite)
 	background = level.render()
-	screen.blit(background, (0, 0))
-	pygame.display.flip()
+	restore_back()
 
 def collision_check(x, y):
 	for monster in mon.monster_instance:
@@ -135,7 +148,7 @@ if __name__ == "__main__":
 	clock = pygame.time.Clock()
 	background = level.render()
 	screen.blit(background, (0, 0))
-	screen.blit(pygame.image.load("tiles/menu.jpg").convert(), (0, background.get_height()))
+	menu = Menu(player, {'width':background.get_width(),'height':background.get_height(),'sidebar_width':32})
 	sprites = pygame.sprite.RenderUpdates()
 	moving_sprites = pygame.sprite.LayeredUpdates()
 	player_sprite = Sprite((player.x*MAP_TILE_WIDTH, player.y*MAP_TILE_HEIGHT), player.icon)

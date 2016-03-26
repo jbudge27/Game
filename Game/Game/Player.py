@@ -1,5 +1,6 @@
 import ConfigParser
 import pygame
+from TileManager import TileManager
 from pygame.locals import *
 
 class Player(object):
@@ -11,7 +12,9 @@ class Player(object):
 		parser = ConfigParser.ConfigParser()
 		parser.read(filename)
 		self.player = {}
-		self.icon = pygame.image.load(parser.get("misc", "icon"))
+		tiles = TileManager(32, 32)
+		images = tiles['tiles/general.bmp']
+		self.icon = images[9][2]
 		self.name = parser.get("misc", "name")
 		self.x = int(parser.get("misc", "x"))
 		self.y = int(parser.get("misc", "y"))
