@@ -1,6 +1,8 @@
 [misc]
 sprite = 8, 3
 name = Knight
+exp_given = 1
+difficulty = 0
 
 [stats]
 level = 1

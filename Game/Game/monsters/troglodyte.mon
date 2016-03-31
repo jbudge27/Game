@@ -1,6 +1,8 @@
 [misc]
 sprite = 6, 8
 name = Troglodyte
+exp_given = 1
+difficulty = 0
 
 [stats]
 level = 0

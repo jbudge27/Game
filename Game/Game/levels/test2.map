@@ -8,7 +8,7 @@ map = ###########
 	##......###
 	1#......#11
 	1##....##11
-	11######111
+	11###v##111
 
 [.]
 name = gnd
@@ -25,9 +25,16 @@ name = door
 tile = 2,0
 walkable = True
 link = levels/test.map
-link_coordinates = 8,4
+link_coordinates = 9,4
 
 [1]
 name = blank
 tile = 10,0
 walkable = false
+
+[v]
+name = door
+tile = 2,0
+walkable = true
+link = levels/test3.map
+link_coordinates = 5,1

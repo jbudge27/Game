@@ -1,6 +1,8 @@
 [misc]
 sprite = 0, 0
 name = Skeleton
+exp_given = 1
+difficulty = 0
 
 [stats]
 level = 0

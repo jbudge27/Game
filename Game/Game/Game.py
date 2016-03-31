@@ -1,8 +1,8 @@
 import pygame, os, math, random
 from Level import Level
-from Player import Player
+from Game_Structs import Player, Monster
 from Sprite import Sprite
-from Monster import Monster
+from Manager import Manager
 from Menu import Menu
 from pygame.locals import *
 
@@ -13,25 +13,26 @@ def key_event_handler(pressed_key):
 		return True
 	elif (pressed_key == K_UP):
 		if (level.is_walkable(player.x, player.y-1)):
-			player_move(0, -1)
+			player.move(0, -1)
 		else:
 			print "OUCH!"
 	elif (pressed_key == K_DOWN):
 		if (level.is_walkable(player.x, player.y+1)):
-			player_move(0, 1)
+			player.move(0, 1)
 		else:
 			print "OUCH!"
 	elif (pressed_key == K_RIGHT):
 		if (level.is_walkable(player.x+1,player.y)):
-			player_move(1, 0)
+			player.move(1, 0)
 		else:
 			print "OUCH!"
 	elif (pressed_key == K_LEFT):
 		if (level.is_walkable(player.x-1, player.y)):
-			player_move(-1, 0)
+			player.move(-1, 0)
 		else:
 			print "OUCH!"
 	elif (pressed_key == K_SPACE):
+		#runs the menu
 		menu.run_menu()
 		background = level.render()
 		restore_back()
@@ -39,14 +40,17 @@ def key_event_handler(pressed_key):
 	return False
 
 def restore_back():
-	screen = pygame.display.set_mode(background.get_size())
-	print "screen"
+	global screen
+	global background
+	screen.fill((0, 0, 0))
+	#print "screen"
 	screen.blit(background,(0, 0))
-	print "blit"
+	#print "blit"
 	pygame.display.flip()
-	print "flip"
+	#print "flip"
 
 def player_move(dx, dy):
+	#inputs are the amount you want it to move, not the coordinates.
 	player.x += dx
 	player.y += dy
 	player_sprite.move(dx * MAP_TILE_WIDTH, dy * MAP_TILE_HEIGHT)
@@ -56,76 +60,86 @@ def player_move(dx, dy):
 def end_step():
 	global triggered_events
 	#moves all the monsters
-	for monster in mon.monster_instance:
-		move_monster(monster)
-		#print "The monster has moved!"
+	for mon in monsters:
+		move_monster(mon)
 	#handle the triggered events from the main game loop
 	triggered_events.update(add_events())
 	if ("new_monster" in triggered_events):
-		n = triggered_events.pop("new_monster", None)
-		x = triggered_events.pop("x", None)
-		y = triggered_events.pop("y", None)
-		new_mon = mon.load_monster(n, x, y)
-		moving_sprites.add(new_mon["sprite"])
+		new_mon = triggered_events.pop("new_monster", None)
+		new_mon.set_pos((triggered_events.pop("x", None), triggered_events.pop("y", None)))
+		monsters.append(new_mon)
+		moving_sprites.add(new_mon.sprite)
 		moving_sprites.switch_layer(0,1)
 	collision_check(player.x, player.y)
 
 def move_monster(mons):
-	info = {"level":mons["stats"]["level"], "x":mons["x"], "y":mons["y"], "p_level":player.player["stats"]["level"], "p_x":player.x, "p_y":player.y, "redo":0}
-	temp_x, temp_y = mon.move(info)
-	while not level.is_walkable(temp_x, temp_y):
-		info["redo"] += 1
-		temp_x, temp_y = mon.move(info)
-		for other_mons in mon.monster_instance:
-			if (other_mons == mons):
-				continue
-			elif (other_mons['x'], other_mons['y'] == temp_x, temp_y):
-				temp_x, temp_y = mon.move(info)
-		#print temp_x, temp_y
-	mons["sprite"].move((temp_x - mons["x"]) * MAP_TILE_WIDTH, (temp_y - mons["y"]) * MAP_TILE_HEIGHT)
-	mons["x"], mons["y"] = (temp_x, temp_y)
+	#generate a grid around the monster, then value each square.
+	#move to the best square afterwards.
+	x, y = 0, 0
+	top_val = []
+	for grid_y in range(mons.y-1, mons.y+1):
+		for grid_x in range(mons.x-1, mons.x+1):
+			val = 0
+			if level.is_walkable(grid_x, grid_y):
+				val += 100
+			else:
+				val -= 1000
+			if is_occupied(grid_x, grid_y) and (mons.x != grid_x and mons.y != grid_y):
+				val -= 1000
+			if player.stats['level'] >= mons.difficulty:
+				val += abs(player.x - grid_x)
+				val += abs(player.y - grid_y)
+			else:
+				val -= abs(player.x - grid_x)
+				val -= abs(player.y - grid_y)
+			if val > 0:
+				for q in range(1, val):
+					top_val.append((grid_x, grid_y))
+	pos = random.choice(top_val)
+	mons.move(pos[0] - mons.x, pos[1] - mons.y)
 
 def add_events():
 	#probabilistically does stuff. Fun.
 	#adds monsters, possibly changes terrain, etc.
-	place_monster = 25
+	place_monster = 3
 	MAX = 100
 	trig = {}
 	test_val = random.randint(0, MAX)
 	if (test_val < place_monster):
-		#print "placing monster..."
 		x, y = 0, 0
 		while is_occupied(x, y):
 			x, y = random.randint(0, level.width), random.randint(0, level.height)
-		trig = {"new_monster":mon.generate_monster(player.player['stats']['level']), "x":x, "y":y}
+		trig = {"new_monster":manager.generate_monster(player.stats['level']), "x":x, "y":y}
 	return trig
 
 def is_occupied(x, y):
 	if (not level.is_walkable(x, y)):
 		return True
-	for mons in mon.monster_instance:
-		if (mons['x'] == x and mons['y'] == y):
+	for mons in monsters:
+		if (mons.x == x and mons.y == y):
 			return True
 	return False
 
 def change_level():
 	global background
 	global screen
-	mon.remove_all_monsters()
-	temp_sprite = player_sprite
-	#sprites.
+	global moving_sprites
+	monsters.empty()
+	temp_sprite = player.sprite
+	moving_sprites.empty()
+	moving_sprites.add(temp_sprite)
 	new_dict = level.get_map_and_coords(player.x, player.y)
 	level.load_map(new_dict["map_name"])
-	x_sprite = new_dict['x'] - player.x
-	y_sprite = new_dict['y'] - player.y
-	player_move(x_sprite, y_sprite)
+	x = new_dict['x'] - player.x
+	y = new_dict['y'] - player.y
+	player.move(x, y)
 	background = level.render()
 	restore_back()
 
 def collision_check(x, y):
-	for monster in mon.monster_instance:
-		if monster['x'] == x and monster['y'] == y:
-			print "You collided with " + monster['name']
+	for m in monsters:
+		if m.x == x and m.y == y:
+			print "You collided with " + m.name
 #------------------------------------------------------------------
 #----------------MAIN GAME CODE------------------------------------
 #------------------------------------------------------------------
@@ -142,28 +156,24 @@ if __name__ == "__main__":
 	MAP_TILE_HEIGHT = 32
 	game_over = False
 	level = Level()
-	player = Player()
-	mon = Monster()
+	manager = Manager()
+	player = manager.load_player('players/base.plyr')
+	monsters = []
 	level.load_map('levels/test.map')
 	clock = pygame.time.Clock()
 	background = level.render()
 	screen.blit(background, (0, 0))
-	menu = Menu(player, {'width':background.get_width(),'height':background.get_height(),'sidebar_width':32})
-	sprites = pygame.sprite.RenderUpdates()
+	#menu = Menu(player, {'width':500,'height':500,'sidebar_width':32, 'button_height':24})
 	moving_sprites = pygame.sprite.LayeredUpdates()
-	player_sprite = Sprite((player.x*MAP_TILE_WIDTH, player.y*MAP_TILE_HEIGHT), player.icon)
-	moving_sprites.add(player_sprite)
+	#player_sprite = Sprite((player.x*MAP_TILE_WIDTH, player.y*MAP_TILE_HEIGHT), player.icon, "player")
+	moving_sprites.add(player.sprite)
 	moving_sprites.switch_layer(0, 1)
 	pygame.display.flip()
 
 	while not game_over:
 		#update the screen to include any changes we made by moving, etc.
-		sprites.clear(screen, background)
 		moving_sprites.clear(screen, background)
-		#sprites.update()
-		dirty = sprites.draw(screen)
 		moving_dirty = moving_sprites.draw(screen)
-		pygame.display.update(dirty)
 		pygame.display.update(moving_dirty)
 		#However many frames per second.
 		clock.tick(16)
@@ -172,6 +182,7 @@ if __name__ == "__main__":
 			if event.type == pygame.locals.QUIT:
 				game_over = True
 			elif event.type == pygame.locals.KEYDOWN:
+				print event.key
 				game_over = key_event_handler(event.key)
 				#run_AI()
 				end_step()

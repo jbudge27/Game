@@ -10,18 +10,6 @@ class Monster(object):
 	def __init__(self):
 		#load sprites from sheet
 		table = TileManager(32, 32)
-		#width = 32
-		#height = 32
-		#image = pygame.image.load("tiles/monsters.bmp").convert()
-		#image_width, image_height = image.get_size()
-		#tile_table = []
-		#for tile_x in range(0, image_width/width):
-		#	line = []
-		#	tile_table.append(line)
-		#	for tile_y in range(0, image_height/height):
-		#		rect = (tile_x*width, tile_y*height, width, height)
-		#		line.append(image.subsurface(rect))
-		#self.sprites = tile_table
 		self.sprites = table["tiles/monsters.bmp"]
 		#this is the instances of monsters in the level
 		self.monster_instance = []
@@ -34,7 +22,7 @@ class Monster(object):
 		new_mon = {}
 		new_mon['name'] = parser.get("misc", "name")
 		pos = parser.get("misc", "sprite").split(',')
-		new_mon['sprite'] = Sprite((x*32, y*32), self.sprites[int(pos[0])][int(pos[1])])
+		new_mon['sprite'] = Sprite((x*32, y*32), self.sprites[int(pos[0])][int(pos[1])], "monster")
 		new_mon['x'] = x
 		new_mon['y'] = y
 		for section in parser.sections():

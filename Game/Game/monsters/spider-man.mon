@@ -1,6 +1,8 @@
 [misc]
 sprite = 2, 3
 name = Spider-Man
+exp_given = 1
+difficulty = 0
 
 [stats]
 level = 0
