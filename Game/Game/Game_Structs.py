@@ -98,3 +98,32 @@ class Player(object):
 		self.x += dx
 		self.y += dy
 		self.sprite.move(dx*self.utils.MAP_TILE_WIDTH, dy*self.utils.MAP_TILE_HEIGHT)
+
+class Level(object):
+	def __init__(self, map, key, tiles):
+		self.map = map
+		self.key = key
+		self.tiles = tiles
+		self.width = len(self.map[0])
+		self.height = len(self.map)
+
+	def load_tile(self, x, y):
+		pos = self.get_tile(x, y).get("tile").split(',')
+		image = self.tiles[int(pos[0])][int(pos[1])]
+		return image
+
+	def get_tile(self, x, y):
+		try:
+			char = self.map[y][x]
+		except IndexError:
+			return {}
+		try:
+			return self.key[char]
+		except KeyError:
+			return {}
+
+	def is_walkable(self, x, y):
+		val = self.get_tile(x, y).get("walkable")
+		#print "walkable is " + str(val)
+		return val in (True, 1, 'true', 'yes', "True", 'Yes', '1', 'on', 'On')
+
