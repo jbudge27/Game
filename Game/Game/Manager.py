@@ -136,7 +136,8 @@ class ScreenManager:
 		pygame.display.update(dirty)
 
 	def add_sprite(self, sprite, layer):
-		self.sprites.add(sprite, layer)
+		self.sprites.add(sprite)
+		self.sprites.change_layer(sprite, layer)
 
 	def remove_sprite(self, sprite):
 		self.sprites.pop(sprite)
