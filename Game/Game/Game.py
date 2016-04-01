@@ -62,17 +62,21 @@ def end_step():
 def move_monster(mons):
 	#generate a grid around the monster, then value each square.
 	#move to the best square afterwards.
-	x, y = 0, 0
+	x, y = mons.x-1, mons.y-1
 	top_val = []
-	for grid_y in range(mons.y-1, mons.y+1):
-		for grid_x in range(mons.x-1, mons.x+1):
+	for grid_y in range(3):
+		x = mons.x-1
+		top_val.append([])
+		for grid_x in range(3):
 			val = 0
-			if screen.level.is_walkable(grid_x, grid_y):
-				val += 100
+			#if screen.level.is_walkable(grid_x, grid_y):
+			#	val += 10
+			#else:
+			#	val -= 1000
+			if is_occupied(x, y):
+				val -= 1000
 			else:
-				val -= 1000
-			if is_occupied(grid_x, grid_y) and (mons.x != grid_x and mons.y != grid_y):
-				val -= 1000
+				val += 10
 			if player.stats['level'] >= mons.difficulty:
 				val += abs(player.x - grid_x)
 				val += abs(player.y - grid_y)
@@ -80,15 +84,34 @@ def move_monster(mons):
 				val -= abs(player.x - grid_x)
 				val -= abs(player.y - grid_y)
 			if val > 0:
+				#print (x, y)
+				#print "walkable"
+				#print val
 				for q in range(1, val):
-					top_val.append((grid_x, grid_y))
-	pos = random.choice(top_val)
+					top_val[grid_y].append((x, y))
+			else:
+				#print (x, y)
+				#print "not walkable"
+				top_val[grid_y].append((mons.x, mons.y))
+			#print top_val[grid_y]
+			x += 1
+		#print top_val[grid_y]
+		y += 1
+	#print top_val
+	final_grid = []
+	for coord in top_val:
+		final_grid += coord
+	#print final_grid
+	pos = random.choice(final_grid)
+	print "pos is "
+	print pos
+	print "for " + mons.name
 	mons.move(pos[0] - mons.x, pos[1] - mons.y)
 
 def add_events():
 	#probabilistically does stuff. Fun.
 	#adds monsters, possibly changes terrain, etc.
-	place_monster = 3
+	place_monster = 20
 	MAX = 100
 	trig = {}
 	test_val = random.randint(0, MAX)
