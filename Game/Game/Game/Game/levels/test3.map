@@ -1,0 +1,36 @@
+[level]
+map = #####v################
+	#.........############
+	#....................#
+	#....##.############.#
+	#.........#11111111#.#
+	#.........#11111111#.#
+	#########.#11111111#.#
+	#2222222#............#
+	######################
+[.]
+name = gnd
+tile = 9,0
+walkable = True
+
+[#]
+name = wall
+tile = 12,0
+walkable = False
+
+[v]
+name = door
+tile = 2,0
+walkable = True
+link = levels/test2.map
+link_coordinates = 5,8
+
+[1]
+name = water
+tile = 2,1
+walkable = False
+
+[2]
+name = lava
+tile = 1,1
+walkable = False

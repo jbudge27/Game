@@ -12,22 +12,22 @@ def key_event_handler(pressed_key):
 		if (screen.level.is_walkable(player.x, player.y-1)):
 			player_move(0, -1)
 		else:
-			screen.feedback.update("OUCH! Wall to the north.")
+			print "OUCH!"
 	elif (pressed_key == K_DOWN):
 		if (screen.level.is_walkable(player.x, player.y+1)):
 			player_move(0, 1)
 		else:
-			screen.feedback.update("OUCH! Wall to the south.")
+			print "OUCH!"
 	elif (pressed_key == K_RIGHT):
 		if (screen.level.is_walkable(player.x+1,player.y)):
 			player_move(1, 0)
 		else:
-			screen.feedback.update("OUCH! Wall to the east.")
+			print "OUCH!"
 	elif (pressed_key == K_LEFT):
 		if (screen.level.is_walkable(player.x-1, player.y)):
 			player_move(-1, 0)
 		else:
-			screen.feedback.update("OUCH! Wall to the west.")
+			print "OUCH!"
 	elif (pressed_key == K_SPACE):
 		#runs the menu
 		menu.run_menu()

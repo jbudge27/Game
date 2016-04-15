@@ -1,0 +1,12 @@
+[monsters]
+names = troglodyte
+	spider-man
+	skeleton
+	knight
+	totem
+	blue_totem
+	shemon
+
+[items]
+names = potion
+	nothing

@@ -1,0 +1,22 @@
+[misc]
+sprite = 8, 3
+name = Knight
+exp_given = 1
+difficulty = 0
+
+[stats]
+level = 1
+strength = 3
+will = 1
+constitution = 2
+wisdom = 0
+quickness = 1
+water = 0
+earth = 0
+air = 0
+fire = 0
+lightning = 0
+light = 1
+dark = 0
+sound = 0
+chaos = 0

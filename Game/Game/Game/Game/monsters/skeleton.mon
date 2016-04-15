@@ -1,0 +1,22 @@
+[misc]
+sprite = 0, 0
+name = Skeleton
+exp_given = 1
+difficulty = 0
+
+[stats]
+level = 0
+strength = 2
+will = 0
+constitution = 0
+wisdom = 2
+quickness = 0
+water = 0
+earth = 0
+air = 0
+fire = 0
+lightning = 0
+light = 0
+dark = 1
+sound = 0
+chaos = 0

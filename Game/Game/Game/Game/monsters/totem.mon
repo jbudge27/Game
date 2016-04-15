@@ -1,0 +1,22 @@
+[misc]
+sprite = 9, 5
+name = Totem
+exp_given = 1
+difficulty = 0
+
+[stats]
+level = 1
+strength = 1
+will = 3
+constitution = 1
+wisdom = 3
+quickness = 0
+water = 1
+earth = 0
+air = 1
+fire = 0
+lightning = 0
+light = 0
+dark = 0
+sound = 0
+chaos = 0

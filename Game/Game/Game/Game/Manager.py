@@ -1,8 +1,7 @@
 import pygame, random, copy
 from pygame.locals import *
 import ConfigParser
-from Game_Structs import Player, Monster, Item, Level, Utils
-from Menu_Structs import Text_Area
+from Game_Structs import Player, Monster, Item, Level
 
 class FileManager:
 	def __init__(self):
@@ -122,38 +121,23 @@ class TileManager:
 		return tile_table
 
 class ScreenManager:
-	def __init__(self, map_name=None, w = 500, h = 500):
-		self.screen = pygame.display.set_mode((w, h))
-		self.background = pygame.Surface((w, h))
-		self.screen.blit(self.background, (0, 0))
+	def __init__(self, map_name):
+		self.screen = pygame.display.set_mode((500, 500))
 		self.files = FileManager()
-		utils = Utils()
-		#build map if specified
-		if map_name is not None:
-			self.level = self.files.load_map(map_name)
-			self.back_map = self.render()
-			self.feedback = Text_Area((0, self.back_map.get_height()), self.back_map.get_width(), 250)
-			self.set_map()
-		#if map not specified, go menu mode
-		else:
-			self.set_menu()
+		self.level = self.files.load_map()
+		self.back_map = self.render()
+		self.feedback = pygame.Surface((self.back_map.get_width(), 250))
 		self.sprites = pygame.sprite.LayeredUpdates()
-		self.add_sprite(self.feedback, 0)
-		#self.set_map()
+		self.set_map()
 
 	def update(self):
-		self.sprites.clear(self.screen, self.background)
+		self.sprites.clear(self.screen, self.back_map)
 		dirty = self.sprites.draw(self.screen)
-		#pygame.display.update(dirty)
-		#self.background.blit(self.feedback, (0, self.back_map.get_height()))
-		pygame.display.flip()
+		pygame.display.update(dirty)
 
 	def add_sprite(self, sprite, layer):
 		self.sprites.add(sprite)
 		self.sprites.change_layer(sprite, layer)
-
-	def clear_sprites(self):
-		self.sprites.clear(self.screen, self.background)
 
 	def remove_sprite(self, sprite):
 		self.sprites.pop(sprite)
@@ -170,15 +154,10 @@ class ScreenManager:
 		return (int(coords[0]), int(coords[1]))
 
 	def set_map(self):
-		self.background.fill((0,0,0))
-		self.background.blit(self.back_map, (0, 0))
-		self.feedback.move(0, self.back_map.get_height() - self.feedback.rect.y)
-		self.screen.blit(self.background, (0, 0))
+		self.screen.fill((0,0,0))
+		self.screen.blit(self.back_map, (0, 0))
+		self.screen.blit(self.feedback, (0, self.back_map.get_height()))
 		pygame.display.flip()
-
-	def set_menu(self):
-		self.background.fill((0,0,0))
-		self.screen.blit(self.background, (0,0))
 
 	def check_door(self, x, y):
 		if self.level.get_tile(x, y).get("name") == "door":

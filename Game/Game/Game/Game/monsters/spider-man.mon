@@ -1,0 +1,22 @@
+[misc]
+sprite = 2, 3
+name = Spider-Man
+exp_given = 1
+difficulty = 0
+
+[stats]
+level = 0
+strength = 1
+will = 1
+constitution = 1
+wisdom = 0
+quickness = 2
+water = 0
+earth = 1
+air = 0
+fire = 0
+lightning = 0
+light = 0
+dark = 0
+sound = 0
+chaos = 0

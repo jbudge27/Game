@@ -1,0 +1,11 @@
+[potion]
+type = healing
+sprite = 6,4
+equip = False
+stats = heal,1;constitution,1
+mana = 0
+
+[nothing]
+sprite = 0,0
+type = nothing
+equip = false
